@@ -17,8 +17,12 @@ body{min-width:0;min-height:100svh;margin:0;color:var(--ink);font-family:var(--s
 body::before{position:fixed;inset:0;z-index:0;pointer-events:none;content:"";opacity:.18;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E")}
 #bg{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
 .site-header,.page-shell,.site-footer{position:relative;z-index:1}
-.site-header{display:flex;align-items:center;justify-content:space-between;width:min(1120px,calc(100% - 64px));margin:0 auto;padding:24px 0 18px;border-bottom:1px solid var(--line)}
+.site-header{position:absolute;top:0;left:50%;display:flex;align-items:center;justify-content:space-between;width:min(1120px,calc(100% - 64px));margin:0 auto;padding:24px 0 18px;border-bottom:1px solid var(--line);transform:translateX(-50%)}
 .wordmark{font-family:var(--serif);font-size:23px;font-weight:600;letter-spacing:.025em}
+.wordmark a,.site-nav a{color:inherit;text-decoration:none}
+.site-nav{display:flex;align-items:center;gap:22px;color:rgba(255,244,237,.72);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.site-nav a{transition:color .2s}
+.site-nav a:hover,.site-nav a:focus-visible{color:#fff4ed}
 .header-note,.eyebrow,.track-label,.site-footer{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
 .header-note{color:var(--muted)}
 .page-shell{display:grid;min-height:calc(100svh - 118px);place-items:center;padding:35px 32px 245px}
@@ -38,7 +42,9 @@ h1 em{color:var(--rose);font-weight:400}
 .heart-button:focus-visible,.btn:focus-visible,.replay:focus-visible,.listen-link:focus-visible{outline:2px solid var(--rose);outline-offset:5px}
 .music-card{position:relative;width:min(100%,340px);justify-self:center;padding:15px 15px 17px;border:1px solid rgba(255,255,255,.8);background:rgba(251,246,237,.78);box-shadow:0 20px 60px rgba(72,49,39,.14),0 3px 12px rgba(72,49,39,.07);transform:rotate(1deg);transition:transform .5s,box-shadow .5s}
 .music-card:hover{transform:rotate(0) translateY(-4px);box-shadow:0 25px 66px rgba(72,49,39,.19)}
-.album-art{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;background:#d9c9b8}
+.album-frame{overflow:hidden;aspect-ratio:4/5;border-radius:4px;background:#d9c9b8;box-shadow:0 6px 20px rgba(48,29,30,.12)}
+.album-art{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 42%;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.music-card:hover .album-art{transform:scale(1.035)}
 .track-info{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 2px 9px}
 .track-label{margin-bottom:2px;color:var(--muted);font-size:9px}
 .track-title{font-family:var(--serif);font-size:27px;font-weight:600;line-height:1.1}
@@ -50,7 +56,8 @@ h1 em{color:var(--rose);font-weight:400}
 .music-dock-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 9px}
 .music-dock-title{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.1}
 .music-dock-caption{margin-top:3px;color:var(--muted);font-size:10px}
-.music-dock-toggle{padding:7px 9px;border:1px solid var(--line);background:transparent;color:var(--rose-dark);font:500 9px var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.music-dock-toggle{padding:7px 9px;border:1px solid var(--line);background:transparent;color:var(--rose-dark);font:500 9px var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.music-dock-toggle:hover{border-color:var(--rose-dark);background:var(--rose-dark);color:var(--paper-light)}
 .music-dock-toggle:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
 .music-frame-wrap{overflow:hidden;max-height:180px;transition:max-height .25s ease}
 .music-frame{display:block;width:100%;height:175px;border:0;background:#e5d7c8}
@@ -101,27 +108,198 @@ h1 em{color:var(--rose);font-weight:400}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+.site-header{position:absolute;top:0;left:50%;z-index:5;transform:translateX(-50%);border-color:rgba(255,244,237,.18)}
+.wordmark{color:#fff4ed}
+.header-note{color:rgba(255,244,237,.68)}
+.page-shell{display:block;min-height:0;padding:0}
+.screen{display:grid;width:100%;max-width:none;margin:0 auto;animation:none}
+.screen-start{position:relative;isolation:isolate;min-height:100svh;grid-template-columns:minmax(0,1.05fr) minmax(260px,.65fr);align-content:center;gap:clamp(42px,8vw,130px);overflow:hidden;padding:clamp(120px,16vh,180px) max(32px,calc((100vw - 1160px)/2)) 100px;color:#fff4ed;background:radial-gradient(ellipse at 75% 42%,rgba(231,126,133,.25),transparent 35%),radial-gradient(ellipse at 20% 85%,rgba(123,44,79,.62),transparent 42%),linear-gradient(135deg,#251b26 0%,#4a2638 52%,#692e49 100%)}
+.screen-start::before,.screen-start::after{position:absolute;z-index:-1;inset:0;pointer-events:none;content:""}
+.screen-start::before{opacity:.52;background:radial-gradient(circle at 74% 30%,rgba(255,231,201,.24) 0 1px,transparent 2px),radial-gradient(circle at 17% 69%,rgba(255,231,201,.24) 0 1px,transparent 2px),radial-gradient(circle at 53% 82%,rgba(255,231,201,.2) 0 1px,transparent 2px),radial-gradient(circle at 91% 61%,rgba(255,231,201,.2) 0 1px,transparent 2px);background-size:190px 190px,240px 240px,170px 170px,220px 220px;animation:star-drift 32s linear infinite}
+.screen-start::after{inset:auto -12vw -38vw auto;width:min(78vw,900px);aspect-ratio:1;border:1px solid rgba(255,228,213,.12);border-radius:50%;box-shadow:0 0 0 50px rgba(255,228,213,.025),0 0 0 110px rgba(255,228,213,.02),0 0 110px rgba(222,115,137,.12)}
+.hero-ornament{position:absolute;top:50%;left:58%;z-index:-1;width:clamp(260px,38vw,540px);aspect-ratio:1;pointer-events:none;transform:translate(-50%,calc(-50% + var(--scroll-drift,0px)));opacity:.64;will-change:transform}
+.hero-orbit{position:absolute;inset:8%;border:1px solid rgba(255,221,207,.24);border-radius:50%;animation:orbit-turn 38s linear infinite}
+.hero-orbit::before,.hero-orbit::after{position:absolute;width:9px;height:9px;border-radius:50%;background:#f7d8c8;box-shadow:0 0 22px 5px rgba(243,156,169,.7);content:""}
+.hero-orbit::before{top:12%;left:18%}.hero-orbit::after{right:7%;bottom:32%;width:5px;height:5px}
+.hero-heart{position:absolute;top:50%;left:50%;color:rgba(238,130,148,.24);font-size:clamp(130px,24vw,310px);line-height:1;text-shadow:0 0 75px rgba(236,120,143,.28);transform:translate(-50%,-55%);animation:heart-breathe 5s ease-in-out infinite}
+.hero-petal{position:absolute;top:18%;left:20%;width:10px;height:17px;border-radius:90% 10% 85% 15%;background:linear-gradient(150deg,#f6d5bd,rgba(200,111,132,.35));opacity:.7;animation:petal-drift 10s ease-in-out infinite}
+.hero-petal:nth-child(4){top:71%;left:78%;width:8px;height:14px;animation-delay:-3s}
+.hero-petal:nth-child(5){top:31%;left:86%;width:6px;height:11px;animation-delay:-6s}
+.intro{position:relative;z-index:1;max-width:620px;padding:0}
+.eyebrow{color:#edc0b5}
+.eyebrow::before{background:currentColor}
+.hero-kicker{font-size:10px;letter-spacing:.28em}
+h1{max-width:670px;margin:27px 0 22px;font-size:clamp(68px,9vw,124px);line-height:.82;letter-spacing:-.055em}
+h1 .hero-line{display:block}
+h1 .hero-line:nth-child(2){padding-left:clamp(15px,4vw,60px);color:#e9a6a4;font-style:italic;font-weight:400}
+.intro-copy{max-width:370px;margin:27px 0 32px;color:rgba(255,244,237,.73);font-size:clamp(14px,1.3vw,17px)}
+.hero-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.heart-button{min-height:54px;padding:0 22px;border:1px solid rgba(255,236,227,.65);border-radius:2px;background:linear-gradient(115deg,#c96d78,#a34e63);color:#fff8f1;font:600 10px var(--sans);letter-spacing:.16em;text-transform:uppercase;box-shadow:0 12px 35px rgba(24,13,22,.24),inset 0 1px rgba(255,255,255,.2);transition:transform .35s,box-shadow .35s,background .35s}
+.heart-button:hover,.heart-button:focus-visible{transform:translateY(-3px);background:linear-gradient(115deg,#df8790,#b35970);box-shadow:0 18px 42px rgba(24,13,22,.32),0 0 28px rgba(238,152,162,.2)}
+.heart-button svg{width:24px;height:24px;padding:0;border:0;fill:#fff0e8}
+.hero-aside{position:relative;z-index:1}
+.music-card{width:min(100%,340px);padding:13px;border-color:rgba(255,255,255,.7);background:rgba(250,243,232,.94);box-shadow:0 30px 90px rgba(15,9,18,.4),0 0 0 10px rgba(255,244,237,.045);transform:rotate(2deg);transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s}
+.music-card:hover{transform:rotate(0) translateY(-8px);box-shadow:0 40px 100px rgba(15,9,18,.48),0 0 0 10px rgba(255,244,237,.07)}
+.record-caption{right:-27px;bottom:70px;color:#eed0c4}
+.hero-scroll-cue{position:absolute;bottom:28px;left:50%;z-index:2;display:flex;align-items:center;gap:11px;color:rgba(255,244,237,.6);font-size:9px;letter-spacing:.21em;text-transform:uppercase;transform:translateX(-50%)}
+.hero-scroll-cue::after{width:36px;height:1px;background:currentColor;content:""}
+.screen-note,.screen-finale{position:relative;isolation:isolate;display:grid;place-content:center;width:100%;max-width:none;min-height:88svh;margin:0;padding:100px 24px;text-align:center;overflow:hidden}
+.screen-note{background:radial-gradient(ellipse at 50% 50%,rgba(255,252,244,.9),rgba(243,234,220,.94) 56%,#eee1d1)}
+.screen-note::before,.screen-finale::before{position:absolute;inset:8% 12%;z-index:-1;border:1px solid rgba(117,57,64,.12);border-radius:48% 52% 43% 57% / 49% 43% 57% 51%;content:"";transform:rotate(-8deg)}
+.screen-note::after{position:absolute;top:18%;right:12%;z-index:-1;color:rgba(166,78,88,.13);font-family:var(--serif);font-size:clamp(70px,12vw,160px);content:"✳";animation:flower-turn 70s linear infinite}
+.note-inner{width:min(100%,740px);margin:auto}
+.screen-note .eyebrow{justify-content:center;color:var(--rose-dark)}
+.screen-note .eyebrow::after{width:28px;height:1px;background:currentColor;content:""}
+.note-title{margin:18px 0 0;font-family:var(--serif);font-size:clamp(12px,1.4vw,15px);font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.note-copy{min-height:clamp(130px,20vh,190px);margin:25px auto 14px;font-size:clamp(42px,7vw,78px);line-height:.99}
+.word{margin-right:.16em;animation:word-in .72s cubic-bezier(.2,.75,.2,1) forwards}
+.dots{gap:10px;margin:24px 0}
+.dots i{width:6px;height:6px;border-color:var(--rose);transition:transform .4s,background .4s,box-shadow .4s}
+.dots i.active{box-shadow:0 0 12px rgba(166,78,88,.45)}
+.row{min-height:54px}
+.btn,.replay{min-height:48px;padding:12px 24px;border-color:var(--rose-dark);border-radius:2px;background:var(--rose-dark);box-shadow:0 8px 24px rgba(117,57,64,.18);transition:background .3s,color .3s,transform .3s,box-shadow .3s}
+.btn:hover,.replay:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(117,57,64,.26)}
+.screen-finale{min-height:76svh;color:#fff4ed;background:radial-gradient(ellipse at 50% 24%,rgba(195,94,117,.28),transparent 40%),linear-gradient(150deg,#33212c,#512a3d 58%,#382630)}
+.screen-finale::before{inset:10% 20%;border-color:rgba(255,241,231,.18)}
+.screen-finale::after{position:absolute;top:50%;left:50%;z-index:-1;color:rgba(241,183,165,.13);font-size:clamp(190px,38vw,480px);content:"✳";transform:translate(-50%,-50%);animation:flower-turn 90s linear infinite}
+.final-flower{font-size:25px;color:#edb9ad;animation:flower-bob 5s ease-in-out infinite}
+.final-title{font-size:clamp(58px,9vw,104px);line-height:.88}
+.screen-finale p{max-width:460px;margin:21px auto 29px;color:rgba(255,244,237,.72)}
+.screen-finale .replay{border-color:rgba(255,235,225,.55);background:transparent;color:#fff4ed}
+.site-footer{position:relative;padding:28px 20px 34px;background:#281d27;color:rgba(255,244,237,.55)}
+.route-page[hidden],.question-card[hidden],.finale-card[hidden]{display:none!important}
+.questions-page{position:relative;isolation:isolate;min-height:100svh;padding:125px 24px 180px;overflow-x:clip;background:radial-gradient(ellipse at 82% 15%,rgba(255,255,255,.62),transparent 30%),radial-gradient(ellipse at 12% 86%,rgba(197,119,122,.13),transparent 32%),linear-gradient(145deg,#f7efe3,#eee1d1)}
+.questions-page::before,.questions-page::after{position:absolute;z-index:-1;pointer-events:none;content:""}
+.questions-page::before{inset:0;opacity:.38;background:radial-gradient(circle at 15% 20%,rgba(166,78,88,.13) 0 1px,transparent 2px),radial-gradient(circle at 88% 73%,rgba(166,78,88,.13) 0 1px,transparent 2px);background-size:140px 160px,210px 180px}
+.questions-page::after{right:-170px;bottom:-260px;width:520px;height:520px;border:1px solid rgba(117,57,64,.1);border-radius:50%;box-shadow:0 0 0 38px rgba(117,57,64,.025),0 0 0 84px rgba(117,57,64,.02)}
+.questions-inner{width:min(100%,850px);margin:0 auto;text-align:center}
+.questions-back{display:inline-flex;align-items:center;gap:10px;margin-bottom:32px;color:var(--rose-dark);font-size:10px;letter-spacing:.16em;text-decoration:none;text-transform:uppercase}
+.questions-back::before{content:"←";font-size:16px;transition:transform .25s}
+.questions-back:hover::before{transform:translateX(-4px)}
+.questions-heading{margin:0;font-family:var(--serif);font-size:clamp(54px,8vw,88px);font-weight:500;line-height:.95;letter-spacing:-.04em}
+.questions-subtitle{margin:15px auto 34px;color:var(--muted);font-size:14px}
+.question-card,.finale-card{position:relative;width:min(100%,720px);margin:0 auto;padding:clamp(34px,7vw,72px) clamp(22px,6vw,68px);border:1px solid rgba(117,57,64,.2);background:rgba(255,251,244,.78);box-shadow:0 22px 70px rgba(72,49,39,.12),inset 0 1px rgba(255,255,255,.8);backdrop-filter:blur(8px)}
+.question-card::before,.finale-card::before{position:absolute;inset:12px;border:1px solid rgba(117,57,64,.08);pointer-events:none;content:""}
+.question-card.is-entering,.finale-card.is-entering{animation:question-enter .72s cubic-bezier(.2,.8,.2,1) both}
+.question-card .eyebrow{justify-content:center}
+.question-card .eyebrow::after{width:28px;height:1px;background:currentColor;content:""}
+.question-card .note-title{margin-top:15px}
+.question-card .note-copy{min-height:clamp(130px,20vh,190px);margin:25px auto 14px;font-size:clamp(40px,7vw,72px)}
+.question-card .dots{position:relative;z-index:1}
+.question-card .row{position:relative;z-index:1}
+.finale-card{padding-top:56px;padding-bottom:56px}
+.finale-card .final-title{font-size:clamp(56px,8vw,86px)}
+.finale-card p{max-width:440px;margin:20px auto 28px;color:var(--muted)}
+.questions-progress{margin-top:23px;color:var(--muted);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+.questions-progress strong{color:var(--rose-dark);font-weight:600}
+body[data-route="questions"] .site-header{border-color:var(--line)}
+body[data-route="questions"] .wordmark{color:var(--ink)}
+body[data-route="questions"] .header-note{color:var(--muted)}
+body[data-route="questions"] .site-nav{color:var(--muted)}
+body[data-route="questions"] .site-nav a:hover,body[data-route="questions"] .site-nav a:focus-visible{color:var(--rose-dark)}
+body[data-route="questions"] .site-footer{background:#eee1d1;color:var(--muted)}
+.page-transition{animation:page-enter .55s cubic-bezier(.2,.75,.2,1) both}
+@keyframes question-enter{from{opacity:0;transform:translateY(16px) scale(.985);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes page-enter{from{opacity:.35;transform:translateY(12px)}to{opacity:1;transform:none}}
+[data-reveal]{opacity:1;transform:none}
+.motion-ready [data-reveal]{opacity:0;transform:translate3d(0,24px,0);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.motion-ready [data-reveal].is-visible{opacity:1;transform:translate3d(0,0,0)}
+.motion-ready [data-reveal="hero"]{transition-duration:1.1s}
+.motion-ready [data-reveal="hero"]:nth-child(2){transition-delay:.12s}
+.motion-ready [data-reveal="hero"]:nth-child(3){transition-delay:.22s}
+.motion-ready [data-reveal="hero"]:nth-child(4){transition-delay:.32s}
+.motion-ready h1 .hero-line{animation:headline-line .9s cubic-bezier(.2,.8,.2,1) both}
+.motion-ready h1 .hero-line:nth-child(2){animation-delay:.15s}
+.motion-ready h1 .hero-line:nth-child(3){animation-delay:.3s}
+.screen-note.is-active .note-copy{animation:note-arrive .75s cubic-bezier(.2,.8,.2,1) both}
+html{scroll-behavior:smooth;scroll-padding-top:18px}
+@keyframes star-drift{to{background-position:190px -190px,-240px 240px,170px -170px,-220px 220px}}
+@keyframes orbit-turn{to{transform:rotate(360deg)}}
+@keyframes heart-breathe{0%,100%{transform:translate(-50%,-55%) scale(.94)}50%{transform:translate(-50%,-55%) scale(1.04)}}
+@keyframes petal-drift{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(28px,54px,0) rotate(110deg)}}
+@keyframes flower-turn{to{transform:rotate(360deg)}}
+@keyframes flower-bob{50%{transform:translateY(-8px) rotate(8deg)}}
+@keyframes note-arrive{from{opacity:.2;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes headline-line{from{opacity:0;transform:translate3d(0,22px,0);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@media(max-width:760px){
+ .site-header{width:calc(100% - 40px);padding:20px 0 14px}
+ .screen-start{min-height:100svh;grid-template-columns:1fr;justify-items:center;gap:38px;padding:125px 24px 100px}
+ .hero-ornament{top:30%;left:50%;width:min(96vw,480px)}
+ .intro{text-align:center}
+ .eyebrow{justify-content:center}
+ h1{margin:22px auto 17px;font-size:clamp(64px,15vw,98px)}
+ h1 .hero-line:nth-child(2){padding-left:0}
+ .intro-copy{margin:18px auto 24px}
+ .hero-actions{justify-content:center}
+ .music-card{width:min(78vw,285px);transform:rotate(1deg)}
+ .hero-scroll-cue{bottom:23px}
+ .screen-note{min-height:80svh;padding:100px 24px}
+ .screen-note::before{inset:13% 5%}
+ .screen-note::after{top:12%;right:7%}
+ .note-copy{min-height:155px;font-size:clamp(43px,10vw,66px)}
+ .screen-finale{min-height:70svh}
+ .screen-finale::before{inset:12% 6%}
+ .screen-finale::after{font-size:70vw}
+}
+@media(max-width:420px){
+ .site-header{width:calc(100% - 30px)}
+ .wordmark{font-size:19px}
+ .header-note{font-size:7px;letter-spacing:.1em}
+ .screen-start{padding-right:18px;padding-left:18px}
+ .music-card{width:min(76vw,260px)}
+ .note-copy{font-size:clamp(38px,11vw,54px)}
+ .music-dock{width:calc(100vw - 20px)}
+ .site-nav{gap:12px;font-size:8px;letter-spacing:.08em}
+ .questions-page{padding:105px 16px 150px}
+ .questions-back{margin-bottom:24px}
+ .questions-subtitle{margin-bottom:25px}
+ .question-card,.finale-card{padding:35px 20px}
+}
+@media(max-height:700px) and (min-width:761px){
+ .screen-start{min-height:760px;padding-top:120px;padding-bottom:90px}
+ .hero-scroll-cue{bottom:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .album-art{transition:none}
+ .music-card:hover .album-art{transform:none}
+ .screen-start::before,.hero-orbit,.hero-heart,.hero-petal,.screen-note::after,.screen-finale::after,.final-flower{animation:none!important}
+ .motion-ready [data-reveal]{opacity:1;transform:none;transition:none}
+ .page-transition,.question-card.is-entering,.finale-card.is-entering{animation:none}
+}
 </style>
 </head>
 <body>
 <canvas id="bg" aria-hidden="true"></canvas>
 <header class="site-header">
-  <div class="wordmark">Between the Lines</div>
+  <div class="wordmark"><a href="#/home">Between the Lines</a></div>
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="#/home" data-route-link="home">Home</a>
+    <a href="#/questions" data-route-link="questions">Questions</a>
+  </nav>
   <div class="header-note">A little note, kept close</div>
 </header>
-<main class="page-shell">
-  <section class="screen screen-start on" id="s0" aria-labelledby="page-title">
-    <div class="intro">
-      <div class="eyebrow">A note for you · No. 01</div>
-      <h1 id="page-title">Somewhere<br>between a<br><em>thought</em> &amp; a wish.</h1>
-      <p class="intro-copy">A little dream I never quite found the right moment to tell you.</p>
-      <button class="heart-button" id="orb" type="button" aria-label="Open the note">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8.3-5.3-8.3-11.2A4.6 4.6 0 0 1 12 7.1a4.6 4.6 0 0 1 8.3 2.7C20.3 15.7 12 21 12 21z"/></svg>
-        <span>There's something I meant to say</span>
-      </button>
+<main class="page-shell" id="app">
+  <section class="screen screen-start route-page on" id="home-page" data-page="home" aria-labelledby="page-title">
+    <div class="hero-ornament" aria-hidden="true">
+      <span class="hero-orbit"></span><span class="hero-heart">♥</span>
+      <span class="hero-petal"></span><span class="hero-petal"></span><span class="hero-petal"></span>
     </div>
-    <aside class="music-card" aria-label="Featured song">
-      <img class="album-art" src="https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/fc/d3/81/fcd381c9-451f-0917-da01-06678a92b85c/17UMGIM90308.rgb.jpg/600x600bb.jpg" alt="Lana Del Rey, Lust for Life album artwork" width="600" height="600">
+    <div class="intro">
+      <div class="eyebrow hero-kicker" data-reveal="hero">A note for you · No. 01</div>
+      <h1 id="page-title" data-reveal="hero"><span class="hero-line">Somewhere</span><span class="hero-line">between a</span><span class="hero-line">thought &amp; a wish.</span></h1>
+      <p class="intro-copy" data-reveal="hero">A little dream I never quite found the right moment to tell you.</p>
+      <div class="hero-actions" data-reveal="hero">
+      <a class="heart-button" id="discover-link" href="#/questions" aria-label="Discover What's Next">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8.3-5.3-8.3-11.2A4.6 4.6 0 0 1 12 7.1a4.6 4.6 0 0 1 8.3 2.7C20.3 15.7 12 21 12 21z"/></svg>
+        <span>Discover What's Next</span>
+      </a>
+      </div>
+    </div>
+    <aside class="music-card hero-aside" aria-label="Featured song" data-reveal="hero">
+      <div class="album-frame">
+        <img class="album-art" src="public/assets/personal-photo.png" alt="Personal portrait" width="1125" height="1481">
+      </div>
       <div class="track-info">
         <div><div class="track-label">A song for this little moment</div><div class="track-title">Love</div><div class="track-artist">Lana Del Rey · Lust for Life</div></div>
         <span class="album-dot" aria-hidden="true">♫</span>
@@ -129,18 +307,28 @@ h1 em{color:var(--rose);font-weight:400}
       <p class="music-card-note">The song player stays close while you read.</p>
       <div class="record-caption" aria-hidden="true">Lust for Life · 2017</div>
     </aside>
+    <div class="hero-scroll-cue" aria-hidden="true">A little further</div>
   </section>
-  <section class="screen screen-note" id="s1" aria-labelledby="note-heading" aria-live="polite">
-    <div class="eyebrow" id="note-heading">A few things I never said</div>
-    <p class="note-copy" id="txt"></p>
-    <div class="dots" id="dots" aria-hidden="true"></div>
-    <div class="row" id="row"></div>
-  </section>
-  <section class="screen screen-finale" id="s2" aria-labelledby="final-heading">
-    <div class="final-flower" aria-hidden="true">✳</div>
-    <h2 class="final-title" id="final-heading">Between the lines,<br>perhaps.</h2>
-    <p id="end">Some things are easier to leave unsaid. For now, let the song keep them company.</p>
-    <button class="replay" id="replay" type="button">Read the note again</button>
+  <section class="questions-page route-page" id="questions-page" data-page="questions" aria-labelledby="questions-heading" hidden>
+    <div class="questions-inner">
+      <a class="questions-back" href="#/home">Back to Home</a>
+      <h1 class="questions-heading" id="questions-heading">A few things<br>never said.</h1>
+      <p class="questions-subtitle">Somewhere in the quiet, a little truth waits.</p>
+      <section class="question-card is-entering" id="question-card" aria-labelledby="note-heading" aria-live="polite">
+        <div class="eyebrow" id="note-heading">A few things I never said</div>
+        <h2 class="note-title">Somewhere in the quiet</h2>
+        <p class="note-copy" id="txt">Some feelings are better left between the lines.</p>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+        <div class="row" id="row"></div>
+        <p class="questions-progress" id="questions-progress" aria-live="polite"></p>
+      </section>
+      <section class="finale-card" id="finale-card" aria-labelledby="final-heading" hidden>
+        <div class="final-flower" aria-hidden="true">✳</div>
+        <h2 class="final-title" id="final-heading">Between the lines,<br>perhaps.</h2>
+        <p id="end">Some things are easier to leave unsaid. For now, let the song keep them company.</p>
+        <button class="replay" id="replay" type="button">Begin again</button>
+      </section>
+    </div>
   </section>
 </main>
 <aside class="music-dock" aria-label="Persistent Apple Music player">
@@ -154,6 +342,7 @@ h1 em{color:var(--rose);font-weight:400}
   <p class="music-dock-note">Press Play to begin; Apple controls playback. Full-track access may require a subscription or purchase. This page cannot provide separate volume controls. <a href="https://music.apple.com/us/album/love/1440899893?i=1440899958" target="_blank" rel="noopener noreferrer">Open song</a></p>
 </aside>
 <footer class="site-footer">Somewhere between a thought and a wish</footer>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous"></script>
 <script>
 const canvas=document.getElementById('bg'),ctx=canvas.getContext('2d');
 let width,height,particles=[],tick=0,lastTrail=0;
@@ -173,13 +362,30 @@ function draw(){
   ctx.globalAlpha=p.type==='burst'?p.life:.2+.16*Math.sin(p.phase);
   ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=6;heart(p.x,p.y,p.size);
  }
- ctx.globalAlpha=1;requestAnimationFrame(draw)
+ ctx.globalAlpha=1;if(!reducedMotion)requestAnimationFrame(draw)
 }
 for(let i=0;i<(reducedMotion?8:18);i++){const p=makeParticle('float',Math.random()*innerWidth,Math.random()*innerHeight);p.size=4+Math.random()*7;particles.push(p)}
 draw();
 addEventListener('pointerdown',event=>{if(!reducedMotion)burst(event.clientX,event.clientY,6)});
 addEventListener('pointermove',event=>{if(reducedMotion||event.timeStamp-lastTrail<100)return;lastTrail=event.timeStamp;const p=makeParticle('float',event.clientX,event.clientY);p.size=5;particles.push(p)});
 
+document.documentElement.classList.add('motion-ready');
+const revealItems=document.querySelectorAll('[data-reveal]');
+if(reducedMotion||!('IntersectionObserver' in window)){
+ revealItems.forEach(item=>item.classList.add('is-visible'));
+}else{
+ const revealObserver=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target)}});
+ },{threshold:.16});
+ revealItems.forEach(item=>revealObserver.observe(item));
+}
+const heroOrnament=document.querySelector('.hero-ornament');
+let parallaxPending=false;
+addEventListener('scroll',()=>{
+ if(reducedMotion||parallaxPending)return;
+ parallaxPending=true;
+ requestAnimationFrame(()=>{heroOrnament.style.setProperty('--scroll-drift',`${Math.min(scrollY,innerHeight)*.1}px`);parallaxPending=false});
+},{passive:true});
 const steps=[
  'Somehow, your name makes an ordinary day feel worth remembering.',
  'I still catch myself hoping the next little light on my screen is you.',
@@ -188,31 +394,80 @@ const steps=[
  'Perhaps the quiet has been trying to tell you something.'
 ];
 const text=document.getElementById('txt'),row=document.getElementById('row'),dots=document.getElementById('dots');
+const questionCard=document.getElementById('question-card'),finaleCard=document.getElementById('finale-card');
+const progress=document.getElementById('questions-progress');
+const homePage=document.getElementById('home-page'),questionsPage=document.getElementById('questions-page');
+const routeLinks=document.querySelectorAll('[data-route-link]');
+let questionIndex=0,currentRoute='';
 steps.forEach(()=>dots.appendChild(document.createElement('i')));
-function show(id){document.querySelectorAll('.screen').forEach(screen=>screen.classList.toggle('on',screen.id===id))}
-function render(index){
+function animateCard(card){
+ card.classList.remove('is-entering');
+ if(reducedMotion)return;
+ if(window.gsap){
+  gsap.fromTo(card,{autoAlpha:0,y:18,scale:.985,filter:'blur(5px)'},{autoAlpha:1,y:0,scale:1,filter:'blur(0px)',duration:.72,ease:'power2.out',overwrite:true})
+ }else{
+  void card.offsetWidth;card.classList.add('is-entering')
+ }
+}
+function applyRoute(){
+ const requested=location.hash==='#/questions'?'questions':'home';
+ if(!location.hash)history.replaceState(null,'',`${location.pathname}${location.search}#/home`);
+ homePage.hidden=requested!=='home';
+ questionsPage.hidden=requested!=='questions';
+ document.body.dataset.route=requested;
+ routeLinks.forEach(link=>{
+  if(link.dataset.routeLink===requested)link.setAttribute('aria-current','page');
+  else link.removeAttribute('aria-current')
+ });
+ if(currentRoute!==requested){
+  currentRoute=requested;
+  const activePage=requested==='home'?homePage:questionsPage;
+  activePage.classList.remove('page-transition');
+  if(!reducedMotion){
+   if(window.gsap)gsap.fromTo(activePage,{opacity:.35,y:12},{opacity:1,y:0,duration:.55,ease:'power2.out',overwrite:true});
+   else{void activePage.offsetWidth;activePage.classList.add('page-transition')}
+  }
+  scrollTo({top:0,behavior:reducedMotion?'auto':'smooth'});
+  if(requested==='questions')animateCard(finaleCard.hidden?questionCard:finaleCard)
+ }
+}
+function renderQuestion(index){
+ questionIndex=index;
+ questionCard.hidden=false;finaleCard.hidden=true;
  dots.querySelectorAll('i').forEach((dot,i)=>dot.classList.toggle('active',i===index));
  text.textContent='';row.replaceChildren();let delay=.12;
- steps[index].split(' ').forEach(word=>{const span=document.createElement('span');span.className='word';span.textContent=word;span.style.animationDelay=delay+'s';delay+=.11;text.append(span,document.createTextNode(' '))});
+ steps[index].split(' ').forEach(word=>{
+  const span=document.createElement('span');span.className='word';span.textContent=word;
+  span.style.animationDelay=delay+'s';delay+=.09;
+  text.append(span,document.createTextNode(' '))
+ });
+ progress.innerHTML=`<strong>${String(index+1).padStart(2,'0')}</strong> / ${String(steps.length).padStart(2,'0')}`;
  if(index<steps.length-1){
-  const next=document.createElement('button');next.className='btn';next.type='button';next.textContent=index===3?'I think I do':'A little more';
-  next.addEventListener('click',event=>{burst(event.clientX,event.clientY,12);render(index+1)});row.appendChild(next);
- }else showFinale();
+  const next=document.createElement('button');next.className='btn';next.type='button';
+  next.textContent=index===3?'I think I do':'A little more';
+  next.addEventListener('click',event=>{burst(event.clientX,event.clientY,12);renderQuestion(index+1);animateCard(questionCard)});
+  row.appendChild(next)
+ }else{
+  const perhaps=document.createElement('button');perhaps.className='btn';perhaps.type='button';perhaps.textContent='Perhaps ♥';
+  const notYet=document.createElement('button');notYet.className='btn ghost';notYet.type='button';notYet.textContent='Not quite';
+  const replies=['Are you sure?','Take your time','Maybe another clue?'];let reply=0;
+  function drift(event){event.preventDefault();notYet.textContent=replies[reply++%replies.length];notYet.style.transform=`translate(${(Math.random()-.5)*70}px,${(Math.random()-.5)*25}px)`}
+  notYet.addEventListener('pointerdown',drift);notYet.addEventListener('click',drift);
+  perhaps.addEventListener('click',event=>{burst(event.clientX,event.clientY,32);questionCard.hidden=true;finaleCard.hidden=false;animateCard(finaleCard)});
+  row.append(perhaps,notYet)
+ }
+ animateCard(questionCard)
 }
-function showFinale(){
- const perhaps=document.createElement('button');perhaps.className='btn';perhaps.type='button';perhaps.textContent='Perhaps ♥';
- const notYet=document.createElement('button');notYet.className='btn ghost';notYet.type='button';notYet.textContent='Not quite';
- const replies=['Are you sure?','Take your time','Maybe another clue?'];let reply=0;
- function drift(event){event.preventDefault();notYet.textContent=replies[reply++%replies.length];notYet.style.transform=`translate(${(Math.random()-.5)*70}px,${(Math.random()-.5)*25}px)`}
- notYet.addEventListener('pointerdown',drift);notYet.addEventListener('click',drift);
- perhaps.addEventListener('click',event=>{const rect=perhaps.getBoundingClientRect();burst(rect.left+rect.width/2,rect.top,36);setTimeout(()=>{show('s2');burst(innerWidth/2,innerHeight*.45,18)},350)});
- row.replaceChildren(perhaps,notYet)
-}
-document.getElementById('orb').addEventListener('click',event=>{
- const rect=event.currentTarget.getBoundingClientRect();burst(rect.left+rect.width/2,rect.top+rect.height/2,24);
- setTimeout(()=>{show('s1');render(0)},250)
+document.getElementById('discover-link').addEventListener('click',event=>{
+ const rect=event.currentTarget.getBoundingClientRect();burst(rect.left+rect.width/2,rect.top+rect.height/2,24)
 });
-document.getElementById('replay').addEventListener('click',()=>{show('s0');text.textContent='';row.replaceChildren()});
+document.getElementById('replay').addEventListener('click',()=>{renderQuestion(0);location.hash='#/home'});
+routeLinks.forEach(link=>link.addEventListener('click',event=>{
+ if(link.dataset.routeLink===currentRoute){event.preventDefault();scrollTo({top:0,behavior:reducedMotion?'auto':'smooth'})}
+}));
+addEventListener('hashchange',applyRoute);
+applyRoute();
+renderQuestion(0);
 </script>
 <script>
 const musicDock=document.querySelector('.music-dock');
@@ -226,7 +481,7 @@ function setMusicDockExpanded(expanded){
  musicFrameWrap.setAttribute('aria-hidden',String(!expanded));
  musicFrame.tabIndex=expanded?0:-1;
 }
-setMusicDockExpanded(!matchMedia('(max-height: 700px)').matches);
+setMusicDockExpanded(false);
 musicDockToggle.addEventListener('click',()=>setMusicDockExpanded(musicDock.classList.contains('compact')));
 </script>
 </body>
